@@ -95,6 +95,7 @@
 #include "effects/osci_SpiralBitCrushEffect.h"
 #include "effects/osci_StereoEffect.h"
 #include "effects/osci_SwirlEffect.h"
+#include "effects/osci_TraceEffect.h"
 #include "effects/osci_TranslateEffect.h"
 #include "effects/osci_TwistEffect.h"
 #include "effects/osci_UnfoldEffect.h"
