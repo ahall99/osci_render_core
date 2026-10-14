@@ -75,10 +75,10 @@ public:
 		auto eff = std::make_shared<osci::SimpleEffect>(
 			std::make_shared<PhaseModEffect>(),
 			std::vector<osci::EffectParameter*>{
-				new osci::EffectParameter("Phase Modulation", "Controls the number of dashed lines in the drawing.", "pmAmp", VERSION_HINT, 0.0, 0.0, 30.0),
-				new osci::EffectParameter("Coarse Frequency", "Offsets the location of the dashed lines.", "pmCoarseFrequency", VERSION_HINT, 1.0, 1.0, 48.0, 1.0),
-                new osci::EffectParameter("Bend", "Controls how much each dash unit is drawn.", "pmBend", VERSION_HINT, 0.0, 0.0, 1.0),
-                new osci::EffectParameter("Phase Offset", "Controls how much each dash unit is drawn.", "pmPhaseOffset", VERSION_HINT, 0.0, 0.0, 1.0, 0.0001f, osci::LfoType::Sawtooth, 0.5f),
+				new osci::EffectParameter("Phase Modulation", "Applies phase modulation to the sound.", "pmAmp", VERSION_HINT, 0.0, 0.0, 30.0),
+				new osci::EffectParameter("Coarse Frequency", "Multiplies the frequency of the phase modulation oscillator.", "pmCoarseFrequency", VERSION_HINT, 1.0, 1.0, 48.0, 1.0),
+                new osci::EffectParameter("Bend", "Bends the phase modulation wave resulting in thinner, sharper timbres.", "pmBend", VERSION_HINT, 0.0, 0.0, 1.0),
+                new osci::EffectParameter("Phase Offset", "Controls the phase offset of the phase modulation oscillator.", "pmPhaseOffset", VERSION_HINT, 0.0, 0.0, 1.0, 0.0001f, osci::LfoType::Sawtooth, 0.5f),
 			}
 		);
 		eff->setName("Phase Modulation");
