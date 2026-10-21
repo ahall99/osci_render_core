@@ -22,15 +22,17 @@ public:
 	osci::Point apply(int index, osci::Point input, osci::Point externalInput, const std::vector<std::atomic<float>>& values, float sampleRate, float frequency) override {
 		if (buffer.empty()) return input;
         buffer[bufferIndex] = input;
+
+        // TODO: Experiment with timbre variations (e.g. bend control, which is
+        // currently commented out)
         
         // If I don't lock coarse freq to a whole number multiple of base freq,
         // there is no way to guarantee initial phase offset on note trigger
         // So force whole number coarse freq and make phase offset a parameter
-
         double pmAmp = values[0];
-        double pmCoarseFrequency = juce::jmax(1.0f, values[1].load()); // TODO min?
-        double bendAmount = 8.0 * values[2];
-        double pmPhaseOffset = values[3];
+        double pmCoarseFrequency = juce::jmax(1.0f, values[1].load());
+        //double bendAmount = 8.0 * values[2];
+        double pmPhaseOffset = values[2];
 
 		const double safeFrequency = juce::jmax(1.0, (double)frequency);
 		const int cycleSamples = juce::jlimit(1, (int)buffer.size(), (int)std::ceil(sampleRate / safeFrequency));
@@ -38,10 +40,12 @@ public:
         
 		const double framePhase = (double)samplesSinceFrameStart / trueCycleSamples; // [0, 1)
         double pmPhase = (framePhase * pmCoarseFrequency - pmPhaseOffset);
+        /*
         pmPhase = pmPhase - std::floor(pmPhase); // Wrap to [0, 1) to apply bend
         if (bendAmount != 0.0) {
             pmPhase = (1.0 - std::exp(bendAmount * pmPhase)) / (1.0 - std::exp(bendAmount));
         }
+        */
         double pmSignal = pmAmp * std::sin(pmPhase * juce::MathConstants<double>::twoPi)
                          / pmCoarseFrequency / juce::MathConstants<double>::twoPi;
         double outFramePhase = framePhase + pmSignal;
@@ -77,7 +81,7 @@ public:
 			std::vector<osci::EffectParameter*>{
 				new osci::EffectParameter("Phase Modulation", "Applies phase modulation to the sound.", "pmAmp", VERSION_HINT, 0.0, 0.0, 30.0),
 				new osci::EffectParameter("Coarse Frequency", "Multiplies the frequency of the phase modulation oscillator.", "pmCoarseFrequency", VERSION_HINT, 1.0, 1.0, 48.0, 1.0),
-                new osci::EffectParameter("Bend", "Bends the phase modulation wave resulting in thinner, sharper timbres.", "pmBend", VERSION_HINT, 0.0, 0.0, 1.0),
+                //new osci::EffectParameter("Bend", "Bends the phase modulation wave resulting in thinner, sharper timbres.", "pmBend", VERSION_HINT, 0.0, 0.0, 1.0),
                 new osci::EffectParameter("Phase Offset", "Controls the phase offset of the phase modulation oscillator.", "pmPhaseOffset", VERSION_HINT, 0.0, 0.0, 1.0, 0.0001f, osci::LfoType::Sawtooth, 0.5f),
 			}
 		);
