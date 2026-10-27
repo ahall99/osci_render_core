@@ -33,8 +33,15 @@ public:
         
 		const double framePhase = (double)samplesSinceFrameStart / trueCycleSamples; // [0, 1)
 
-        double tracePhase = framePhase * (1.0 + fold);
-        tracePhase = 1.0 - std::abs(1.0 - tracePhase);
+        // Make tracePhase a biased triangle wave where the peak is at (1 - 0.5 * fold)
+        // i.e. a saw wave at fold = 0, and a triangle wave at fold = 1
+        // See p2(t) in https://www.desmos.com/calculator/ktfqptaidh
+        double tracePhase = framePhase;
+        if (fold > 0.0) {
+            tracePhase = std::min(framePhase / (1.0 - 0.5 * fold),
+                                  (framePhase - 1.0) / (-0.5 * fold));
+        }
+
         tracePhase = traceStart + traceLength * tracePhase;
         tracePhase = tracePhase - std::floor(tracePhase); // Wrap in [0, 1)
 
